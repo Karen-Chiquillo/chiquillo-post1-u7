@@ -1,5 +1,6 @@
 package com.example.multas.controller;
 
+import com.example.multas.domain.PagoRechazadoException;
 import com.example.multas.model.LimiteMultasPendientesException;
 import com.example.multas.model.MultaNotFoundException;
 import com.example.multas.model.MultaYaPagadaException;
@@ -34,5 +35,12 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors()
                 .forEach(e -> errores.put(e.getField(), e.getDefaultMessage()));
         return errores;
+    }
+
+    
+    @ExceptionHandler(PagoRechazadoException.class)
+    @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
+    public Map<String, String> handlePagoRechazado(PagoRechazadoException ex) {
+        return Map.of("error", ex.getMessage());
     }
 }
